@@ -122,7 +122,7 @@ public class Mix implements IMix{
 		if(split[0].length() == 1){
 			// switches function based on initial letter command
 			switch((char)split[0].charAt(0)){
-			
+
 			// insert character at location
 			case 'b': try{Integer.parseInt(split[2]);}
 			catch(NumberFormatException e)
@@ -142,7 +142,7 @@ public class Mix implements IMix{
 					("\n\tERROR: NON_NUMBER LOCATION!\n");}
 				break;
 
-			//switch characters at positions
+				//switch characters at positions
 			case 'w': try{message.swap
 				(Integer.parseInt(split[1])-1, 
 						Integer.parseInt(split[2])-1);}
@@ -152,8 +152,8 @@ public class Mix implements IMix{
 
 			//cut to clip board
 			case 'x': try{message.copyToClipBoard
-			((Integer.parseInt(split[1])-1),
-					(Integer.parseInt(split[2]))-1);
+				((Integer.parseInt(split[1])-1),
+						(Integer.parseInt(split[2]))-1);
 			message.deleteGroup
 			((Integer.parseInt(split[1])-1),
 					(Integer.parseInt(split[2]))-1);}
@@ -163,28 +163,32 @@ public class Mix implements IMix{
 
 			//paste from clip board
 			case 'p': try{message.pasteFromClipboard
-			(Integer.parseInt(split[1])-1);}
+				(Integer.parseInt(split[1])-1);}
 			catch(NumberFormatException e)
 			{System.out.println("\n\tERROR: NON_NUMBER LOCATION!\n");}
 			break;
 
 			//copy from clip board
 			case 'c': try{message.copyToClipBoard
-			((Integer.parseInt(split[1])-1),
-					(Integer.parseInt(split[2]))-1);}
+				((Integer.parseInt(split[1])-1),
+						(Integer.parseInt(split[2]))-1);}
 			catch(NumberFormatException e)
 			{System.out.println
 				("\n\tERROR: NON_NUMBER LOCATION!\n");}
 			break;
 
 			//prints current clip board
-			case 'v': System.out.println
-			("Current Clip Board: " + (message.getCurrentClip()) + 
-					"(" + message.getCurrentClip().length() 
-					+ " char long)");
-			break;
+			case 'v': 
+				if(message.getCurrentClip() != null)
+					System.out.println
+					("Current Clip Board: " + (message.getCurrentClip())
+							+ " <" + message.getCurrentClip().length() 
+							+ " char long>");
+				else
+					System.out.println("CLIP BOARD IS EMPTY");
+				break;
 
-			//clears clip board
+				//clears clip board
 			case 'e': message.setCurrentClip(null);
 			System.out.println("CLIP BOARD CLEARED");
 			break;
@@ -198,7 +202,7 @@ public class Mix implements IMix{
 			break;
 			default: System.out.println("\n\tERROR: UNKNOWN COMMAND!\n");
 			}
-		//save command, and clip board if applicable, for saving to file
+			//save command, and clip board if applicable, for saving to file
 			if(message.getCurrentClip() != null)
 				commands.add
 				(command +"\t"+ message.getCurrentClip()+"\n");

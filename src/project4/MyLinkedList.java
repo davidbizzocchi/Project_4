@@ -115,6 +115,13 @@ public class MyLinkedList<E> {
 		// check for empty list
 		if(top == null)
 			top = new Node<E>(data, top);
+
+		//check for invalid boundaries
+		else if((location < 0) || (location > count()))
+			System.out.println
+			("\n\tERROR: COMMAND OUT OF BOUNDS!\n");
+
+		//otherwise perform operation
 		else{
 			Node<E> temp = getTop();
 			//set temp to space before desired position
@@ -227,28 +234,31 @@ public class MyLinkedList<E> {
 	public void deleteAtLocation (int location){
 
 		try{
-		//ensures valid location
-		if(location > 0 && location <= count()){
-			// empty list check
-			if(top == null)
-				System.out.println("EMPTY LIST");
-			else{
-				Node<E> temp = top;
-				//set node to space before location
-				for(int i = 1; i < location-1; i++){
-					temp = temp.getNext();
+			//ensures valid location
+			if(location > 0 && location <= count()){
+				// empty list check
+				if(top == null)
+					System.out.println("EMPTY LIST");
+				else if(location == 1)
+					top = top.getNext();
+				else{
+					Node<E> temp = top;
+					//set node to space before location
+					for(int i = 1; i < location-1; i++){
+						temp = temp.getNext();
+					}
+					//skips specified node in linked list
+					temp.setNext(temp.getNext().getNext());
 				}
-				//skips specified node in linked list
-				temp.setNext(temp.getNext().getNext());
 			}
-		}
-		else
-			System.out.println("\n\tERROR: UNABLE TO REACH LOCATION!\n");
+			else
+				System.out.println
+				("\n\tERROR: UNABLE TO REACH LOCATION!\n");
 		}
 		catch(NumberFormatException e){
 			System.out.println("\n\tERROR: NON_NUMBER LOCATION!\n");
 		}
-		
+
 	}
 
 	/**********************************************************
@@ -265,22 +275,34 @@ public class MyLinkedList<E> {
 		if(top == null)
 			System.out.println("EMPTY LIST");
 
-		//set node to before start
-		for(int i = 0; i < start-1; i++){
-			temp = temp.getNext();
+		//check boundary exceptions
+		else if((start < 0) || (end > count()))
+			System.out.println
+			("\n\tERROR: COMMAND OUT OF BOUNDS!\n");
+
+		//check start is before end
+		else if(end < start)
+			System.out.println
+			("\n\tERROR: CANNOT END BEFORE START!\n");
+
+		//otherwise perform operation
+		else{
+			//set node to before start
+			for(int i = 0; i < start-1; i++){
+				temp = temp.getNext();
+			}
+
+			//set reference node
+			Node<E> tempEnd = temp;
+
+			//sets reference node to after group
+			for(int i = start-1; i <= (start+(end-start)); i++){
+				tempEnd = tempEnd.getNext();
+			}
+
+			//linked list points over the specified group
+			temp.setNext(tempEnd);
 		}
-
-		//set reference node
-		Node<E> tempEnd = temp;
-
-		//sets reference node to after group
-		for(int i = start-1; i <= (start+(end-start)); i++){
-			tempEnd = tempEnd.getNext();
-		}
-
-		//linked list points over the specified group
-		temp.setNext(tempEnd);
-
 	}
 
 	/*********************************************
@@ -307,9 +329,14 @@ public class MyLinkedList<E> {
 	 ******************************************/
 	public void swap(int x, int y){
 
-		//TODO check for negative values
-
-		try{
+		// check for invalid boundaries
+		if((x < 0) || (x >= count()) ||
+				(y < 0) || (y >= count()))
+			System.out.println
+			("\n\tERROR: COMMAND OUT OF BOUNDS!\n");
+		
+		//otherwise swap nodes
+		else{
 			//set first data in temp variable
 			E temp = get(x).getData();
 			//set first node to second
@@ -317,14 +344,6 @@ public class MyLinkedList<E> {
 			//set second node to temp variable
 			get(y).setData(temp);
 		}
-		catch(NullPointerException e){
-			JFrame warning = new JFrame ("WARNING");
-			JOptionPane.showMessageDialog(warning,
-					"Values not in list",
-					"CANNOT SWAP VALUES",
-					JOptionPane.WARNING_MESSAGE);
-		}
-
 	}
 
 	/******************************************************
@@ -335,7 +354,8 @@ public class MyLinkedList<E> {
 	 * Copies specified nodes to a clip board.
 	 */
 	public String copyToClipBoard(int start, int finish){
-		//temp clip board
+
+		//temporary clip board
 		String clipped = "";
 
 		Node<E> temp = top;
@@ -344,19 +364,34 @@ public class MyLinkedList<E> {
 		if(top == null)
 			System.out.println("EMPTY LIST");
 
-		//sets node to space before start
-		for(int i = 1; i <= start; i++){
-			temp = temp.getNext();
+		//check boundary exceptions
+		else if((start < 0) || (finish > count()))
+			System.out.println
+			("\n\tERROR: COMMAND OUT OF BOUNDS!\n");
+
+		//check start is before end
+		else if(finish < start)
+			System.out.println
+			("\n\tERROR: CANNOT END BEFORE START!\n");
+
+		//otherwise perform operation
+		else{
+			//sets node to space before start
+			for(int i = 1; i <= start; i++){
+				temp = temp.getNext();
+			}
+
+			//copies data until specified end to clip board
+			for(int i = start; i < (start+(finish-start)+1); i++){
+				clipped += temp.getData();
+				temp = temp.getNext();
+			}
+			//sets clip board
+			currentClip = clipped;
+			return clipped;
 		}
 
-		//copies data until specified endd to clipboard
-		for(int i = start; i < (start+(finish-start)+1); i++){
-			clipped += temp.getData();
-			temp = temp.getNext();
-		}
-		//sets clip board
-		currentClip = clipped;
-		return clipped;
+		return null;
 	}
 
 	/*****************************************************************
@@ -368,21 +403,33 @@ public class MyLinkedList<E> {
 		Node<E> temp = getTop(); 
 		Node<E> temp2 = getTop();
 
-		//sets temp variables to space before location
-		for(int i = 0; i < location; i++){
-			temp = temp.getNext();
-			temp2 = temp2.getNext();
-		}
-		//stores next value in temp
-		temp2 = temp2.getNext();
+		// check for empty list
+		if(top == null)
+			System.out.println("EMPTY LIST");
 
-		//pastes each individual values at start location
-		for(int j = 0; j < currentClip.length(); j++){
-			temp.setNext(new Node(currentClip.charAt(j),null));
-			temp = temp.getNext();
+		//check for invalid boundaries
+		else if((location < 0) || (location > count()))
+			System.out.println
+			("\n\tERROR: COMMAND OUT OF BOUNDS!\n");
+
+		//otherwise perform operation
+		else{
+			//sets temp variables to space before location
+			for(int i = 0; i < location; i++){
+				temp = temp.getNext();
+				temp2 = temp2.getNext();
+			}
+			//stores next value in temp
+			temp2 = temp2.getNext();
+
+			//pastes each individual values at start location
+			for(int j = 0; j < currentClip.length(); j++){
+				temp.setNext(new Node(currentClip.charAt(j),null));
+				temp = temp.getNext();
+			}
+			//sets end of string to end
+			temp.setNext(temp2);
 		}
-		//sets end of string to end
-		temp.setNext(temp2);
 	}
 
 	/********************************************************
