@@ -7,8 +7,6 @@ package project4;
  * Custom single linked list class
  ***********************************************************/
 
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import java.lang.StringBuilder;
 
 public class MyLinkedList<E> {
