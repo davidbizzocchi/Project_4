@@ -1,5 +1,14 @@
 package project4;
 
+/**********************************************************
+ * @author David Bizzocchi
+ * @version NOvmber, 2015
+ *
+ * @param <E> Type of data for linked list
+ * 
+ * Creates nodes of generic type for single linked list
+ *********************************************************/
+
 public class Node<E> {
 	
 		public E data;

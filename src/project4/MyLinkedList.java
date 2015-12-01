@@ -1,49 +1,97 @@
 package project4;
 
+/************************************************************
+ * @author David Bizzocchi
+ * @version November, 2015
+ * 
+ * Custom single linked list class
+ ***********************************************************/
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import java.lang.StringBuilder;
 
 public class MyLinkedList<E> {
 
+	/** Top or starting node of linked list */
 	private Node<E> top;
 
+	/** Tail or ending node of linked list */
 	private Node<E> tail;
-	
+
+	/** keeps track of current clipboard */
 	private String currentClip = null;
-	
+
+	/*********************************************
+	 * @return top node of list
+	 * 
+	 * Returns first node from linked list.
+	 ********************************************/
 	public Node<E> getTop() {
 		return top;
 	}
 
+	/********************************************
+	 * @return tail node of list
+	 * 
+	 * Returns last node from linked list.
+	 *******************************************/
 	public Node<E> getTail() {
 		return tail;
 	}
 
+	/********************************************
+	 * @param tail sets end of node list
+	 * 
+	 * sets param to end of linked list
+	 *******************************************/
 	public void setTail(Node<E> tail) {
 		this.tail = tail;
 	}
 
+	/*****************************************************
+	 * @param top node to set at beginning of linked list
+	 * 
+	 * sets param to front of linked list
+	 *****************************************************/
 	public void setTop(Node<E> top) {
 		this.top = top;
 	}
-	
 
+	/**********************************************
+	 * @return current clip board
+	 * 
+	 * returns current clip board
+	 *********************************************/
 	public String getCurrentClip() {
 		return currentClip;
 	}
 
+	/***********************************************
+	 * @param currentClip
+	 * 
+	 * sets param to current clip board
+	 ***********************************************/
 	public void setCurrentClip(String currentClip) {
 		this.currentClip = currentClip;
 	}
 
+	/***********************************************
+	 * Constructor for linked list class
+	 **********************************************/
 	public MyLinkedList() {
 		top = null;
 		tail = null;
 	}
 
+	/***********************************************************
+	 * @param data element to be added to front of linked list
+	 * 
+	 * Adds parameter to the front of the linked list
+	 **********************************************************/
 	public void addFirst (E data) {
 
+		// check for empty list
 		if(top == null){
 			top = new Node<E>(data, null);
 			tail = top;
@@ -56,20 +104,32 @@ public class MyLinkedList<E> {
 		}
 	}
 
+	/*********************************************************
+	 * @param data element to be added to linked list
+	 * @param location location of data to be added
+	 * 
+	 * Adds data to specified location in linked list
+	 ********************************************************/
 	public void addAtLocation (E data, int location){
 
+		// check for empty list
 		if(top == null)
 			top = new Node<E>(data, top);
 		else{
 			Node<E> temp = getTop();
+			//set temp to space before desired position
 			for(int i = 1; i < location-1; i++){
 				temp = temp.getNext();
 			}
 
+			//set param data to location
 			temp.setNext(new Node<E>(data,temp.getNext()));
 		}
 	}
 
+	/*************************************
+	 * Displays all of linked list.
+	 ************************************/
 	public void display() {
 
 		Node<E> temp = getTop();
@@ -79,6 +139,11 @@ public class MyLinkedList<E> {
 		}
 	}
 
+	/********************************************
+	 * @return number of elements in linked list
+	 * 
+	 * Counts elements in linked list
+	 *******************************************/
 	public int count() {
 		int count = 0;
 		Node<E> temp = getTop();
@@ -89,6 +154,11 @@ public class MyLinkedList<E> {
 		return count;
 	}
 
+	/**********************************************************
+	 * @param data element to be added to tail of linked list
+	 * 
+	 * Adds element to end or tail of linked list
+	 *********************************************************/
 	public void addAtEnd (E data) {
 
 		if (top == null) {
@@ -101,7 +171,12 @@ public class MyLinkedList<E> {
 		}
 	} 
 
-
+	/********************************************************
+	 * @param data element to be deleted
+	 * @return data that was deleted
+	 * 
+	 * Deletes first element of specified data.
+	 *******************************************************/
 	public E delete (E data) {
 
 		// missing list case
@@ -133,48 +208,87 @@ public class MyLinkedList<E> {
 
 	}
 
+	/**************************************************
+	 * @param data element to be deleted
+	 * 
+	 * Deletes all instances of element in linked list.
+	 *************************************************/
 	public void deleteAll (E data) {
 		for(int i = 0; i <= count(); i++){
 			delete(data);
 		}
 	}
-	
+
+	/********************************************************
+	 * @param location location of node that will be deleted
+	 * 
+	 * deleted specific single node in linked list.
+	 *******************************************************/
 	public void deleteAtLocation (int location){
-		
-		if(top == null)
-			System.out.println("EMPTY LIST");
-		else{
-		Node<E> temp = top;
-		for(int i = 1; i < location-1; i++){
-			temp = temp.getNext();
+
+		try{
+		//ensures valid location
+		if(location > 0 && location <= count()){
+			// empty list check
+			if(top == null)
+				System.out.println("EMPTY LIST");
+			else{
+				Node<E> temp = top;
+				//set node to space before location
+				for(int i = 1; i < location-1; i++){
+					temp = temp.getNext();
+				}
+				//skips specified node in linked list
+				temp.setNext(temp.getNext().getNext());
+			}
 		}
-		temp.setNext(temp.getNext().getNext());
+		else
+			System.out.println("\n\tERROR: UNABLE TO REACH LOCATION!\n");
 		}
-	}
-	
-	public void deleteGroup (int start, int end){
-		
-		Node<E> temp = top;
-		if(top == null)
-			System.out.println("EMPTY LIST");
-//		if(start == 1){
-//			top = top.getNext();
-//			start++;
-//		}
-		
-		for(int i = 0; i < start-1; i++){
-			temp = temp.getNext();
+		catch(NumberFormatException e){
+			System.out.println("\n\tERROR: NON_NUMBER LOCATION!\n");
 		}
-		
-		Node<E> tempEnd = temp;
-		
-		for(int i = start-1; i <= (start+(end-start)); i++){
-			tempEnd = tempEnd.getNext();
-		}
-		temp.setNext(tempEnd);
 		
 	}
 
+	/**********************************************************
+	 * @param start beginning of node group
+	 * @param end end of node group
+	 * 
+	 * deletes group of nodes between specified start and end
+	 *********************************************************/
+	public void deleteGroup (int start, int end){
+
+		Node<E> temp = top;
+
+		//empty list
+		if(top == null)
+			System.out.println("EMPTY LIST");
+
+		//set node to before start
+		for(int i = 0; i < start-1; i++){
+			temp = temp.getNext();
+		}
+
+		//set reference node
+		Node<E> tempEnd = temp;
+
+		//sets reference node to after group
+		for(int i = start-1; i <= (start+(end-start)); i++){
+			tempEnd = tempEnd.getNext();
+		}
+
+		//linked list points over the specified group
+		temp.setNext(tempEnd);
+
+	}
+
+	/*********************************************
+	 * @param location location of desired node
+	 * @return node at desired location
+	 * 
+	 * Returns node at specified location
+	 ********************************************/
 	public Node<E> get(int location){
 
 		Node<E> temp = getTop();
@@ -184,61 +298,98 @@ public class MyLinkedList<E> {
 
 		return temp;
 	}
-	
+
+	/*******************************************
+	 * @param x location of first swap value
+	 * @param y location of second swap value
+	 * 
+	 * swaps nodes at the two given locations
+	 ******************************************/
 	public void swap(int x, int y){
-		
+
 		//TODO check for negative values
-		
+
 		try{
-		x-=1;y-=1;
-		E temp = get(x).getData();
-		get(x).setData(get(y).getData());
-		get(y).setData(temp);
+			//set first data in temp variable
+			E temp = get(x).getData();
+			//set first node to second
+			get(x).setData(get(y).getData());
+			//set second node to temp variable
+			get(y).setData(temp);
 		}
 		catch(NullPointerException e){
 			JFrame warning = new JFrame ("WARNING");
 			JOptionPane.showMessageDialog(warning,
-		    "Values not in list",
-		    "CANNOT SWAP VALUES",
-		    JOptionPane.WARNING_MESSAGE);
+					"Values not in list",
+					"CANNOT SWAP VALUES",
+					JOptionPane.WARNING_MESSAGE);
 		}
-		
+
 	}
-	
+
+	/******************************************************
+	 * @param start starting position of copy to clip board
+	 * @param finish ending position of copy to clip board
+	 * @return string that will be the current clip board
+	 * 
+	 * Copies specified nodes to a clip board.
+	 */
 	public String copyToClipBoard(int start, int finish){
+		//temp clip board
 		String clipped = "";
+
 		Node<E> temp = top;
-		
+
+		//empty list
 		if(top == null)
 			System.out.println("EMPTY LIST");
-		
+
+		//sets node to space before start
 		for(int i = 1; i <= start; i++){
 			temp = temp.getNext();
 		}
-		
+
+		//copies data until specified endd to clipboard
 		for(int i = start; i < (start+(finish-start)+1); i++){
 			clipped += temp.getData();
 			temp = temp.getNext();
 		}
+		//sets clip board
 		currentClip = clipped;
 		return clipped;
 	}
-	
+
+	/*****************************************************************
+	 * @param location space in message to paste clip board to
+	 * 
+	 * pastes current clip board to linked list in specified position
+	 ****************************************************************/
 	public void pasteFromClipboard(int location){
-		Node<E> temp = getTop();
-		
+		Node<E> temp = getTop(); 
+		Node<E> temp2 = getTop();
+
+		//sets temp variables to space before location
 		for(int i = 0; i < location; i++){
 			temp = temp.getNext();
+			temp2 = temp2.getNext();
 		}
-		Node<E> temp2 = temp.getNext();
-		
+		//stores next value in temp
+		temp2 = temp2.getNext();
+
+		//pastes each individual values at start location
 		for(int j = 0; j < currentClip.length(); j++){
 			temp.setNext(new Node(currentClip.charAt(j),null));
 			temp = temp.getNext();
 		}
+		//sets end of string to end
 		temp.setNext(temp2);
 	}
 
+	/********************************************************
+	 * @return readable string
+	 * 
+	 * returns linked list to readable, numbered string
+	 *******************************************************/
 	@Override
 	public String toString(){
 
