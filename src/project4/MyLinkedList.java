@@ -118,6 +118,10 @@ public class MyLinkedList<E> {
 		else if((location < 0) || (location > count()))
 			System.out.println
 			("\n\tERROR: COMMAND OUT OF BOUNDS!\n");
+		
+		//check for end of string
+		else if(location == count())
+			addAtEnd(data);
 
 		//otherwise perform operation
 		else{
@@ -229,7 +233,7 @@ public class MyLinkedList<E> {
 	 * 
 	 * deleted specific single node in linked list.
 	 *******************************************************/
-	public void deleteAtLocation (int location){
+	public Node<E> deleteAtLocation (int location){
 
 		try{
 			//ensures valid location
@@ -237,16 +241,20 @@ public class MyLinkedList<E> {
 				// empty list check
 				if(top == null)
 					System.out.println("EMPTY LIST");
-				else if(location == 1)
-					top = top.getNext();
 				else{
 					Node<E> temp = top;
 					//set node to space before location
 					for(int i = 1; i < location-1; i++){
 						temp = temp.getNext();
 					}
+					
+					//passes value for unmix
+					Node<E> rtn = temp.getNext();
+					
 					//skips specified node in linked list
 					temp.setNext(temp.getNext().getNext());
+					
+					return rtn;
 				}
 			}
 			else
@@ -256,6 +264,8 @@ public class MyLinkedList<E> {
 		catch(NumberFormatException e){
 			System.out.println("\n\tERROR: NON_NUMBER LOCATION!\n");
 		}
+		
+		return null;
 
 	}
 
@@ -268,7 +278,7 @@ public class MyLinkedList<E> {
 	public void deleteGroup (int start, int end){
 
 		Node<E> temp = top;
-
+		
 		//empty list
 		if(top == null)
 			System.out.println("EMPTY LIST");
@@ -282,7 +292,12 @@ public class MyLinkedList<E> {
 		else if(end < start)
 			System.out.println
 			("\n\tERROR: CANNOT END BEFORE START!\n");
-
+		
+		//check for beginning of list
+		else if(start == 0){
+			top = get(end);
+			top = top.getNext();
+		}
 		//otherwise perform operation
 		else{
 			//set node to before start
@@ -350,9 +365,12 @@ public class MyLinkedList<E> {
 	 * @return string that will be the current clip board
 	 * 
 	 * Copies specified nodes to a clip board.
-	 */
+	 *****************************************************/
 	public String copyToClipBoard(int start, int finish){
 
+		//clears old clip board
+		currentClip = null;
+		
 		//temporary clip board
 		String clipped = "";
 
@@ -397,10 +415,14 @@ public class MyLinkedList<E> {
 	 * 
 	 * pastes current clip board to linked list in specified position
 	 ****************************************************************/
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void pasteFromClipboard(int location){
 		Node<E> temp = getTop(); 
 		Node<E> temp2 = getTop();
-
+		
+		//remove underscores
+		setCurrentClip(getCurrentClip().replace('_',' '));
+		
 		// check for empty list
 		if(top == null)
 			System.out.println("EMPTY LIST");
@@ -428,6 +450,16 @@ public class MyLinkedList<E> {
 			//sets end of string to end
 			temp.setNext(temp2);
 		}
+	}
+	
+	public String ToStringNoSpaces(){
+		StringBuilder display = new StringBuilder();
+
+		for(int i = 0; i < count(); i++){
+			display.append(get(i).getData());
+		}
+
+		return display.toString();
 	}
 
 	/********************************************************

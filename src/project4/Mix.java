@@ -86,6 +86,7 @@ public class Mix implements IMix{
 		for(int i = m.length()-1; i >= 0; i--){
 			msg.addFirst(m.charAt(i));
 		}
+
 		return msg;
 	}
 
@@ -119,6 +120,8 @@ public class Mix implements IMix{
 		// splits command by spaces
 		String [] split = command.split("\\s+");
 
+		char returnMe = 'N';
+
 		if(split[0].length() == 1){
 			// switches function based on initial letter command
 			switch((char)split[0].charAt(0)){
@@ -135,8 +138,17 @@ public class Mix implements IMix{
 
 			// removes character at position
 			case 'r': 
-				try{message.deleteAtLocation
-					(Integer.parseInt(split[1]));}
+				try{
+					//check for "top" node change
+					if(Integer.parseInt(split[1])==1)
+						message.setTop(message.getTop().getNext());
+					else{
+						returnMe = message.deleteAtLocation
+								(Integer.parseInt(split[1])).getData();
+						if(returnMe == ' ')
+							returnMe = '_';
+					}
+				}
 				catch(NumberFormatException e)
 				{System.out.println
 					("\n\tERROR: NON_NUMBER LOCATION!\n");}
@@ -156,7 +168,9 @@ public class Mix implements IMix{
 						(Integer.parseInt(split[2]))-1);
 			message.deleteGroup
 			((Integer.parseInt(split[1])-1),
-					(Integer.parseInt(split[2]))-1);}
+					(Integer.parseInt(split[2]))-1);
+			message.setCurrentClip(message.getCurrentClip().replace(' ', '_'));
+			}
 			catch(NumberFormatException e)
 			{System.out.println("\n\tERROR: NON_NUMBER LOCATION!\n");}
 			break;
@@ -181,9 +195,10 @@ public class Mix implements IMix{
 			case 'v': 
 				if(message.getCurrentClip() != null)
 					System.out.println
-					("Current Clip Board: " + (message.getCurrentClip())
-							+ " <" + message.getCurrentClip().length() 
-							+ " char long>");
+					("Current Clip Board: " + 
+							(message.getCurrentClip().replace('_', ' '))
+							+ " < " + message.getCurrentClip().length() 
+							+ " char long >");
 				else
 					System.out.println("CLIP BOARD IS EMPTY");
 				break;
@@ -199,19 +214,36 @@ public class Mix implements IMix{
 
 			//saves commands
 			case 's': save(split[1]);
+			System.out.println("Saved Message:" + 
+					message.ToStringNoSpaces());
 			break;
+
 			default: System.out.println("\n\tERROR: UNKNOWN COMMAND!\n");
 			}
+
 			//save command, and clip board if applicable, for saving to file
-			if(message.getCurrentClip() != null)
-				commands.add
-				(command +"\t"+ message.getCurrentClip()+"\n");
-			else
-				commands.add(command + "\n");
+			if(message.getCurrentClip() != null){
+				if((char)split[0].charAt(0) == 'r'){
+					commands.add
+					(command + " " + returnMe + message.getCurrentClip()+"\n");
+				}
+				else
+					commands.add
+					(command + " " + message.getCurrentClip()+"\n");
+			}
+			else{
+				if((char)split[0].charAt(0) == 'r'){
+					commands.add
+					(command + " " + returnMe + "\n");
+				}
+				else
+					commands.add(command + "\n");
+			}
 		}
 		else
 			// if command is not known
 			System.out.println("\n\tERROR: UNKNOWN COMMAND!\n");
+
 		return command;
 	}
 
